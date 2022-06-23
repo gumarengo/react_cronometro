@@ -1,25 +1,55 @@
-import logo from './logo.svg';
+import React, { Component } from "react";
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export default class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      numero: 0,
+      nomeBotao: 'START'
+    };
+    this.timer = null;
+    this.start = this.start.bind(this);
+    this.zerar = this.zerar.bind(this);
+  }
 
-export default App;
+  start(){
+    let state = this.state;
+
+    if(this.timer !== null){
+      clearInterval(this.timer);
+      this.timer = null;
+      state.nomeBotao = 'START'
+    }else{
+      this.timer = setInterval(()=>{
+        let state = this.state;
+        state.numero += 0.1;
+        state.nomeBotao = 'PAUSE';
+        this.setState(state);
+      },100);
+    }
+    this.setState(state);
+  }
+
+  zerar(){
+    let state = this.state;
+    state.numero = 0.0;
+    clearInterval(this.timer);
+    this.timer = null;
+    state.nomeBotao = 'START';
+    this.setState(state);
+  }
+
+  render(){
+    return(
+      <div className="container">
+        <img src={require('./assets/cronometro.png')} className="img" />
+        <a className="timer" >{this.state.numero.toFixed(1)}</a>
+        <div className="playBtn">
+          <a className="botao" onClick={this.start}>{this.state.nomeBotao}</a>
+          <a className="botao" onClick={this.zerar}>ZERAR</a>
+        </div>
+      </div>
+    )
+  }
+}
